@@ -17,4 +17,13 @@ const getUsers = async () => {
   return users;
 };
 
-module.exports = { createUser, getUsers };
+const getUserById = async (id) => {
+  const user = await User.findOne(
+    { where: { id },
+    attributes: ['id', 'displayName', 'email', 'image'] },
+  );
+
+  return user;
+};
+
+module.exports = { createUser, getUsers, getUserById };

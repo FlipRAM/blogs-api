@@ -1,4 +1,4 @@
-const { OK, CREATED, ALREADY_CREATED } = require('../helpers/httpStatus');
+const { OK, CREATED, ALREADY_CREATED, NOT_FOUND } = require('../helpers/httpStatus');
 const userServ = require('../services/userServices');
 
 const createUser = async (req, res, _next) => {
@@ -17,4 +17,13 @@ const getUsers = async (req, res, _next) => {
   return res.status(OK).json(users);
 };
 
-module.exports = { createUser, getUsers };
+const getUserById = async (req, res, _next) => {
+  const { id } = req.params;
+  const user = await userServ.getUserById(id);
+
+  if (!user) return res.status(NOT_FOUND).json({ message: 'User does not exist' });
+
+  return res.status(OK).json(user);
+};
+
+module.exports = { createUser, getUsers, getUserById };

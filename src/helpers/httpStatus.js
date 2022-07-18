@@ -3,6 +3,7 @@ module.exports = {
   CREATED: 201,
   NOT_FORMAT: 400,
   NOT_AUTH: 401,
+  NOT_FOUND: 404,
   ALREADY_CREATED: 409,
   SERVER_ERROR: 500,
 };
