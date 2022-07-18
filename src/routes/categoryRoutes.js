@@ -8,4 +8,6 @@ const tokenMid = require('../middlewares/tokenMiddlewares');
 
 router.post('/', tokenMid.checkToken, categoryMid.checkData, categoryControl.createCategory);
 
+router.get('/', tokenMid.checkToken, categoryControl.getCategories);
+
 module.exports = router;
