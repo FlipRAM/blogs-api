@@ -1,4 +1,4 @@
-const { CREATED, ALREADY_CREATED } = require('../helpers/httpStatus');
+const { OK, CREATED, ALREADY_CREATED } = require('../helpers/httpStatus');
 const userServ = require('../services/userServices');
 
 const createUser = async (req, res, _next) => {
@@ -11,4 +11,10 @@ const createUser = async (req, res, _next) => {
   return res.status(CREATED).json(token);
 };
 
-module.exports = { createUser };
+const getUsers = async (req, res, _next) => {  
+  const users = await userServ.getUsers();
+
+  return res.status(OK).json(users);
+};
+
+module.exports = { createUser, getUsers };
