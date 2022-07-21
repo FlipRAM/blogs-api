@@ -1,4 +1,4 @@
-const { OK, CREATED, NOT_FORMAT, NOT_FOUND, NOT_AUTH } = require('../helpers/httpStatus');
+const { OK, CREATED, NOT_FORMAT, NOT_FOUND, NOT_AUTH, DELETED } = require('../helpers/httpStatus');
 const postServ = require('../services/postServices');
 
 const createPost = async (req, res, _next) => {
@@ -42,4 +42,17 @@ const updateById = async (req, res, _next) => {
   return res.status(OK).json(post);
 };
 
-module.exports = { createPost, getPosts, getPostById, updateById };
+const deleteById = async (req, res, _next) => {
+  const { id } = req.params;
+  const { authorization } = req.headers;
+
+  const post = await postServ.updateById(authorization, id);
+  
+  if (!post) return res.status(NOT_FOUND).json({ message: 'Post does not exist' });
+
+  if (post.message) return res.status(NOT_AUTH).json(post);
+
+  if (post) return res.status(DELETED).json();
+};
+
+module.exports = { createPost, getPosts, getPostById, updateById, deleteById };

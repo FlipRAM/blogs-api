@@ -66,13 +66,36 @@ const updateById = async (token, id, title, content) => {
   const { data } = jwt.verify(token, process.env.JWT_SECRET);
   const userId = await findUserId(data);
 
-  if (post.userId !== userId) return { message: 'Unauthorized user' };
-
   if (!post) return null;
 
-  const updated = await BlogPost.update({ title, content }, { where: { id } });
+  if (post.userId !== userId) return { message: 'Unauthorized user' };
+
+  await BlogPost.update({ title, content }, { where: { id } });
+
+  const updated = await getPostById(id);
   
   return updated;
 };
 
-module.exports = { createBlogPost, getPosts, getPostById, updateById };
+const deleteById = async (token, id) => {
+  const post = await BlogPost.findOne({
+    where: { id },
+    include: [
+      { model: User, as: 'user', attributes: ['id', 'displayName', 'email', 'image'] },
+      { model: Category, as: 'categories', attributes: ['id', 'name'] },
+    ],
+  });
+
+  const { data } = jwt.verify(token, process.env.JWT_SECRET);
+  const userId = await findUserId(data);
+
+  if (post.userId !== userId) return { message: 'Unauthorized user' };
+
+  if (!post) return null;
+
+  await BlogPost.destroy({ where: { id } });
+
+  return true;
+};
+
+module.exports = { createBlogPost, getPosts, getPostById, updateById, deleteById };
