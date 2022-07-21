@@ -12,4 +12,6 @@ router.get('/', tokenMid.checkToken, userControl.getUsers);
 
 router.get('/:id', tokenMid.checkToken, userControl.getUserById);
 
+router.delete('/me', tokenMid.checkToken, userControl.deleteUser);
+
 module.exports = router;

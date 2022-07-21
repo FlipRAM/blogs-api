@@ -1,4 +1,4 @@
-const { OK, CREATED, ALREADY_CREATED, NOT_FOUND } = require('../helpers/httpStatus');
+const { OK, CREATED, ALREADY_CREATED, NOT_FOUND, DELETED } = require('../helpers/httpStatus');
 const userServ = require('../services/userServices');
 
 const createUser = async (req, res, _next) => {
@@ -26,4 +26,11 @@ const getUserById = async (req, res, _next) => {
   return res.status(OK).json(user);
 };
 
-module.exports = { createUser, getUsers, getUserById };
+const deleteUser = async (req, res, _next) => {
+  const { authorization } = req.headers;
+  await userServ.deleteUser(authorization);
+
+  return res.status(DELETED).json();
+};
+
+module.exports = { createUser, getUsers, getUserById, deleteUser };

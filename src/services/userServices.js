@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const { User } = require('../database/models');
 const jwtValidation = require('../auth/jwtValidation');
 
@@ -26,4 +27,19 @@ const getUserById = async (id) => {
   return user;
 };
 
-module.exports = { createUser, getUsers, getUserById };
+const findUserId = async (email) => {
+  const { dataValues: { id } } = await User.findOne({ where: { email }, attributes: ['id'] });
+
+  return id;
+};
+
+const deleteUser = async (token) => {
+  const { data } = jwt.verify(token, process.env.JWT_SECRET);
+  const id = await findUserId(data);
+
+  await User.destroy({ where: { id } });
+
+  return true;
+};
+
+module.exports = { createUser, getUsers, getUserById, deleteUser };
