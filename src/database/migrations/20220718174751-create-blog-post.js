@@ -24,10 +24,6 @@ module.exports = {
           key: 'id',
         },
       },
-      title: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
       published: {
         allowNull: false,
         type: Sequelize.DATE,

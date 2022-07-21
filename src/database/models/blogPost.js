@@ -4,12 +4,14 @@ module.exports = (sequelize, DataTypes) => {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     title: DataTypes.STRING,
     content: DataTypes.STRING,
-    userId: { type: DataTypes.INTEGER, foreignKey: true },
+    userId: DataTypes.INTEGER,
     published: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
     updated: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
   },
   {
     tableName: 'BlogPosts',
+    updatedAt: 'updated',
+    createdAt: 'published',
   });
 
   BlogPost.associate = (models) => {
