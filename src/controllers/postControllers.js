@@ -1,4 +1,4 @@
-const { OK, CREATED, NOT_FORMAT, NOT_FOUND } = require('../helpers/httpStatus');
+const { OK, CREATED, NOT_FORMAT, NOT_FOUND, NOT_AUTH } = require('../helpers/httpStatus');
 const postServ = require('../services/postServices');
 
 const createPost = async (req, res, _next) => {
@@ -26,4 +26,20 @@ const getPostById = async (req, res, _next) => {
   return res.status(OK).json(post);
 };
 
-module.exports = { createPost, getPosts, getPostById };
+const updateById = async (req, res, _next) => {
+  const { id } = req.params;
+  const { authorization } = req.headers;
+  const { title, content } = req.body;
+
+  const post = await postServ.updateById(authorization, id, title, content);
+  
+  if (!title || !content) {
+    return res.status(NOT_FORMAT).json({ message: 'Some required fields are missing' });
+  }
+
+  if (post.message) return res.status(NOT_AUTH).json(post);
+
+  return res.status(OK).json(post);
+};
+
+module.exports = { createPost, getPosts, getPostById, updateById };

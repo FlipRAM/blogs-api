@@ -50,8 +50,29 @@ const getPostById = async (id) => {
   });
 
   if (!post) return null;
-  
+
   return post;
 };
 
-module.exports = { createBlogPost, getPosts, getPostById };
+const updateById = async (token, id, title, content) => {
+  const post = await BlogPost.findOne({
+    where: { id },
+    include: [
+      { model: User, as: 'user', attributes: ['id', 'displayName', 'email', 'image'] },
+      { model: Category, as: 'categories', attributes: ['id', 'name'] },
+    ],
+  });
+
+  const { data } = jwt.verify(token, process.env.JWT_SECRET);
+  const userId = await findUserId(data);
+
+  if (post.userId !== userId) return { message: 'Unauthorized user' };
+
+  if (!post) return null;
+
+  const updated = await BlogPost.update({ title, content }, { where: { id } });
+  
+  return updated;
+};
+
+module.exports = { createBlogPost, getPosts, getPostById, updateById };
