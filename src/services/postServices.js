@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { Op } = require('sequelize');
 const { BlogPost, PostCategory, Category, User } = require('../database/models');
 require('dotenv').config();
 
@@ -98,4 +99,21 @@ const deleteById = async (token, id) => {
   return true;
 };
 
-module.exports = { createBlogPost, getPosts, getPostById, updateById, deleteById };
+const getByContent = async (query) => {
+  const posts = await BlogPost.findAll({
+    where: {
+      [Op.or]: [
+        { title: { [Op.substring]: query } },
+        { content: { [Op.substring]: query } },
+      ],
+    },
+    include: [
+      { model: User, as: 'user', attributes: ['id', 'displayName', 'email', 'image'] },
+      { model: Category, as: 'categories', attributes: ['id', 'name'] },
+    ],
+  });
+
+  return posts;
+};
+
+module.exports = { createBlogPost, getPosts, getPostById, updateById, deleteById, getByContent };

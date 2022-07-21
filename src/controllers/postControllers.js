@@ -55,4 +55,20 @@ const deleteById = async (req, res, _next) => {
   if (post) return res.status(DELETED).json();
 };
 
-module.exports = { createPost, getPosts, getPostById, updateById, deleteById };
+const getByContent = async (req, res, _next) => {
+  const { q } = req.query;
+
+  let posts = [];
+  
+  if (!q) {
+    posts = await postServ.getPosts();
+  }
+
+  if (q) {
+    posts = await postServ.getByContent(q);
+  }
+
+  return res.status(OK).json(posts);
+};
+
+module.exports = { createPost, getPosts, getPostById, updateById, deleteById, getByContent };

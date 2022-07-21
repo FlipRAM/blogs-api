@@ -6,6 +6,8 @@ const postControl = require('../controllers/postControllers');
 const postMid = require('../middlewares/postMiddlewares');
 const tokenMid = require('../middlewares/tokenMiddlewares');
 
+router.get('/search', tokenMid.checkToken, postControl.getByContent);
+
 router.post('/', tokenMid.checkToken, postMid.checkData, postControl.createPost);
 
 router.get('/', tokenMid.checkToken, postControl.getPosts);
